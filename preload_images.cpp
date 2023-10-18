@@ -6,7 +6,7 @@ bool preloadImages() {
 
     int i = 0;
     for (auto& p : fs::directory_iterator(imgFolder)) {
-        image newImage{p.path().u8string(), i++};
+        image newImage{p.path().u8string(), i++, false};
         imageQueue.push_back(newImage);
     }
 

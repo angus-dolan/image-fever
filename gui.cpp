@@ -5,7 +5,22 @@ sf::Vector2f scaleFromDimensions(const sf::Vector2u& textureSize, int screenWidt
     float scaleX = screenWidth / float(textureSize.x);
     float scaleY = screenHeight / float(textureSize.y);
     float scale = std::min(scaleX, scaleY);
+
     return { scale, scale };
+}
+
+sf::Text placeholder(const sf::Font& font, const std::string& str, int charSize, const sf::Color& color, float x, float y) {
+    sf::Text placeholder;
+
+    placeholder.setFont(font);
+    placeholder.setString(str);
+    placeholder.setCharacterSize(charSize);
+    placeholder.setFillColor(color);
+    sf::FloatRect textRect = placeholder.getLocalBounds();
+    placeholder.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    placeholder.setPosition(x, y);
+
+    return placeholder;
 }
 
 int slideshow()
@@ -21,6 +36,13 @@ int slideshow()
     sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight, 32), "Image Fever",
         sf::Style::Titlebar | sf::Style::Close);
     window.setVerticalSyncEnabled(true);
+
+    // Prepare placeholder text
+    sf::Font font;
+    if (!font.loadFromFile("./OpenSans-Bold.ttf")) {
+        return EXIT_FAILURE;
+    }
+    sf::Text text = placeholder(font, "Image hasn't finished processing", 24, sf::Color::White, gameWidth / 2.f, gameHeight / 2.f);
 
     // Load an image to begin with
     sf::Texture texture;
@@ -58,7 +80,7 @@ int slideshow()
             // Arrow key handling!
             if (event.type == sf::Event::KeyPressed)
             {
-                // adjust the image index
+                // Adjust the image index
                 if (event.key.code == sf::Keyboard::Key::Left) {
                     std::vector<image> queue = getQueue();
                     imageIndex = (imageIndex + queue.size() - 1) % queue.size();
@@ -66,14 +88,11 @@ int slideshow()
                 else if (event.key.code == sf::Keyboard::Key::Right) {
                     imageIndex = (imageIndex + 1) % getQueue().size();
                 }
-                    
-                // get image filename
-                const auto& imageFilename = getImage(imageIndex).path;
-                // set it as the window title 
-                window.setTitle(imageFilename);
-                // ... and load the appropriate texture, and put it in the sprite
-                if (texture.loadFromFile(imageFilename))
-                {
+                
+                // Move to next image
+                const auto& image = getImage(imageIndex);
+                window.setTitle(image.path);
+                if (image.processed && texture.loadFromFile(image.path)) {
                     sprite = sf::Sprite(texture);
                     sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight));
                 }
@@ -82,8 +101,14 @@ int slideshow()
 
         // Clear the window
         window.clear(sf::Color(0, 0, 0));
-        // draw the sprite
-        window.draw(sprite);
+
+        // Conditionally draw the sprite or error text
+        const auto& currentImage = getImage(imageIndex);
+        if (currentImage.processed)
+            window.draw(sprite);
+        else
+            window.draw(text);
+
         // Display things on screen
         window.display();
     }

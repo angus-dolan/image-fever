@@ -8,6 +8,7 @@
 struct image {
     std::string path;
     int initialPos;
+    bool processed;
 };
 
 extern std::vector<image> imageQueue;
