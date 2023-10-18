@@ -12,17 +12,9 @@ int slideshow()
 {
     std::srand(static_cast<unsigned int>(std::time(NULL)));
 
-    // example folder to load images
-    const char* image_folder = "images/unsorted";
-    std::vector<std::string> imageFilenames;
-    for (auto& p : fs::directory_iterator(image_folder))
-        imageFilenames.push_back(p.path().u8string());
-
-    // Define some constants
     const float pi = 3.14159f;
     const int gameWidth = 800;
     const int gameHeight = 600;
-
     int imageIndex = 0;
 
     // Create the window of the application
@@ -32,10 +24,11 @@ int slideshow()
 
     // Load an image to begin with
     sf::Texture texture;
-    if (!texture.loadFromFile(imageFilenames[imageIndex]))
+    if (!texture.loadFromFile(getImage(imageIndex).path))
         return EXIT_FAILURE;
-    sf::Sprite sprite(texture);
+
     // Make sure the texture fits the screen
+    sf::Sprite sprite(texture);
     sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight));
 
     sf::Clock clock;
@@ -66,12 +59,16 @@ int slideshow()
             if (event.type == sf::Event::KeyPressed)
             {
                 // adjust the image index
-                if (event.key.code == sf::Keyboard::Key::Left)
-                    imageIndex = (imageIndex + imageFilenames.size() - 1) % imageFilenames.size();
-                else if (event.key.code == sf::Keyboard::Key::Right)
-                    imageIndex = (imageIndex + 1) % imageFilenames.size();
+                if (event.key.code == sf::Keyboard::Key::Left) {
+                    std::vector<image> queue = getQueue();
+                    imageIndex = (imageIndex + queue.size() - 1) % queue.size();
+                }
+                else if (event.key.code == sf::Keyboard::Key::Right) {
+                    imageIndex = (imageIndex + 1) % getQueue().size();
+                }
+                    
                 // get image filename
-                const auto& imageFilename = imageFilenames[imageIndex];
+                const auto& imageFilename = getImage(imageIndex).path;
                 // set it as the window title 
                 window.setTitle(imageFilename);
                 // ... and load the appropriate texture, and put it in the sprite

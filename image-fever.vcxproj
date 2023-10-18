@@ -132,10 +132,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="gui.cpp" />
-    <ClCompile Include="image-fever.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="preload_images.cpp" />
+    <ClCompile Include="shared_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gui.h" />
+    <ClInclude Include="preload_images.h" />
+    <ClInclude Include="shared_state.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
