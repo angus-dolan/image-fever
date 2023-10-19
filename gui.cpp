@@ -23,93 +23,97 @@ sf::Text placeholder(const sf::Font& font, const std::string& str, int charSize,
     return placeholder;
 }
 
+bool preloadResources(sf::Font& font, sf::Texture& texture, int imageIndex) {
+    return font.loadFromFile("./OpenSans-Bold.ttf") &&
+        texture.loadFromFile(getImage(imageIndex).path);
+}
+
+void updateSprite(sf::Sprite& sprite, sf::Texture& texture, int imageIndex, int gameWidth, int gameHeight, sf::RenderWindow& window) {
+    const auto& image = getImage(imageIndex);
+    window.setTitle(image.path);
+
+    if (image.processed && texture.loadFromFile(image.path)) {
+        sprite = sf::Sprite(texture);
+        sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight));
+    }
+}
+
+void handleWindowResize(sf::RenderWindow& window, int gameWidth, int gameHeight) {
+    sf::View view;
+
+    view.setSize(gameWidth, gameHeight);
+    view.setCenter(gameWidth / 2.f, gameHeight / 2.f);
+
+    window.setView(view);
+}
+
 int slideshow()
 {
     std::srand(static_cast<unsigned int>(std::time(NULL)));
 
     const float pi = 3.14159f;
-    const int gameWidth = 800;
     const int gameHeight = 600;
+    const int gameWidth = 800;
     int imageIndex = 0;
 
-    // Create the window of the application
-    sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight, 32), "Image Fever",
-        sf::Style::Titlebar | sf::Style::Close);
-    window.setVerticalSyncEnabled(true);
-
-    // Prepare placeholder text
     sf::Font font;
-    if (!font.loadFromFile("./OpenSans-Bold.ttf")) {
+    sf::Texture texture;
+    sf::Sprite sprite(texture);
+    sf::Text placeholderImage;
+    sf::Clock clock;
+
+    // Prepare resources
+    if (preloadResources(font, texture, imageIndex)) {
+        placeholderImage = placeholder(font, "Image hasn't finished processing", 24, sf::Color::White, gameWidth / 2.f, gameHeight / 2.f);
+        sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight)); // Make sure the texture fits the screen
+    }
+    else {
         return EXIT_FAILURE;
     }
-    sf::Text text = placeholder(font, "Image hasn't finished processing", 24, sf::Color::White, gameWidth / 2.f, gameHeight / 2.f);
 
-    // Load an image to begin with
-    sf::Texture texture;
-    if (!texture.loadFromFile(getImage(imageIndex).path))
-        return EXIT_FAILURE;
+    // Create the window of the application
+    sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight, 32), "Image Fever", sf::Style::Titlebar | sf::Style::Close);
+    window.setVerticalSyncEnabled(true);
 
-    // Make sure the texture fits the screen
-    sf::Sprite sprite(texture);
-    sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight));
-
-    sf::Clock clock;
     while (window.isOpen())
     {
-        // Handle events
         sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Window closed or escape key pressed: exit
-            if ((event.type == sf::Event::Closed) ||
-                ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
-            {
+        while (window.pollEvent(event)) {
+            // Exit
+            if (event.type == sf::Event::Closed ||
+                (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
                 window.close();
                 break;
             }
 
-            // Window size changed, adjust view appropriately
-            if (event.type == sf::Event::Resized)
-            {
-                sf::View view;
-                view.setSize(gameWidth, gameHeight);
-                view.setCenter(gameWidth / 2.f, gameHeight / 2.f);
-                window.setView(view);
+            // Resize window
+            if (event.type == sf::Event::Resized) {
+                handleWindowResize(window, gameWidth, gameHeight);
             }
 
-            // Arrow key handling!
-            if (event.type == sf::Event::KeyPressed)
-            {
-                // Adjust the image index
+            // Arrow keys
+            if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Key::Left) {
-                    std::vector<image> queue = getQueue();
-                    imageIndex = (imageIndex + queue.size() - 1) % queue.size();
+                    imageIndex = (imageIndex + getQueue().size() - 1) % getQueue().size();
                 }
                 else if (event.key.code == sf::Keyboard::Key::Right) {
                     imageIndex = (imageIndex + 1) % getQueue().size();
                 }
-                
-                // Move to next image
-                const auto& image = getImage(imageIndex);
-                window.setTitle(image.path);
-                if (image.processed && texture.loadFromFile(image.path)) {
-                    sprite = sf::Sprite(texture);
-                    sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight));
-                }
+
+                updateSprite(sprite, texture, imageIndex, gameWidth, gameHeight, window);
             }
         }
 
-        // Clear the window
+        // Draw
         window.clear(sf::Color(0, 0, 0));
 
-        // Conditionally draw the sprite or error text
-        const auto& currentImage = getImage(imageIndex);
-        if (currentImage.processed)
+        if (getImage(imageIndex).processed) {
             window.draw(sprite);
-        else
-            window.draw(text);
+        }
+        else {
+            window.draw(placeholderImage);
+        }
 
-        // Display things on screen
         window.display();
     }
 }
