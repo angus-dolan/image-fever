@@ -7,12 +7,14 @@
 
 struct image {
     std::string path;
-    int initialPos;
     bool processed;
+    int initialPos;
+    float hue;
 };
 
-extern std::vector<image> imageQueue;
 extern std::shared_mutex imageQueueLock;
+extern std::vector<image> imageQueue;
+extern int currentIndex;
 
-image getImage(int index);
 std::vector<image> getQueue();
+image getImage(int index);

@@ -85,7 +85,7 @@ int slideshow()
                 window.close();
                 break;
             }
-
+  
             // Resize window
             if (event.type == sf::Event::Resized) {
                 handleWindowResize(window, gameWidth, gameHeight);

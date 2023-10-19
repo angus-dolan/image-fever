@@ -1,4 +1,5 @@
 #include "preload_images.h"
+#include "process_image.h"
 #include "gui.h"
 #include <iostream>
 #include <future>
@@ -9,7 +10,8 @@ int main()
     bool preloaded = preloader.get();
 
     if (preloaded) {
-        slideshow();
+        processImage();
+        //slideshow();
     }
    
     return EXIT_SUCCESS;
