@@ -11,9 +11,11 @@ int main()
     bool preloaded = preloader.get();
 
     if (preloaded) {
-        processImages();
-        imageQueue.printQueue();
-        
+        thread slideshowThread(slideshow);
+        thread processImagesThread(processImages);
+
+        slideshowThread.join();
+        processImagesThread.join();
     }
    
     return EXIT_SUCCESS;
