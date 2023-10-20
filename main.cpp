@@ -10,7 +10,7 @@ int main()
     bool preloaded = preloader.get();
 
     if (preloaded) {
-        processImage();
+        processImages();
         //slideshow();
     }
    

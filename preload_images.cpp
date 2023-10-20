@@ -7,7 +7,7 @@ bool preloadImages() {
     int i = 0;
     for (auto& p : fs::directory_iterator(imgFolder)) {
         image newImage{
-            p.path().u8string(), false, i++, std::numeric_limits<float>::infinity()
+            p.path().u8string(), false, i++, std::numeric_limits<double>::infinity()
         };
 
         imageQueue.push_back(newImage);

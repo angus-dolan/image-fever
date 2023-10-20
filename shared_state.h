@@ -9,7 +9,7 @@ struct image {
     std::string path;
     bool processed;
     int initialPos;
-    float hue;
+    double hue;
 };
 
 extern std::shared_mutex imageQueueLock;

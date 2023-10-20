@@ -11,4 +11,4 @@
 using namespace std;
 using namespace cv;
 
-void processImage();
+void processImages();
