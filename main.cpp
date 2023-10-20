@@ -7,7 +7,7 @@
 
 int main()
 {
-    std::future<bool> preloader = std::async(std::launch::async, preloadImages);
+    future<bool> preloader = async(launch::async, preloadImages);
     bool preloaded = preloader.get();
 
     if (preloaded) {

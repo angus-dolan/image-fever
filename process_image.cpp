@@ -44,7 +44,7 @@ void process(image& img) {
 
     // Mutate shared state with unique_lock
     double hue = calculateMedian(unsorted);
-    unique_lock<std::shared_mutex> lock(imageQueueLock);
+    unique_lock<shared_mutex> lock(imageQueueLock);
 
     img.hue = hue;
     img.processed = true;

@@ -2,7 +2,6 @@
 
 ImageQueue imageQueue;
 shared_mutex imageQueueLock;
-int currentIndex = 0;
 
 image ImageQueue::getImage(int index) {
     return imageQueue[index];
@@ -41,7 +40,7 @@ optional<image> ImageQueue::pop() {
         }
     }
 
-    return std::nullopt;
+    return nullopt;
 }
 
 void ImageQueue::printQueue() const {
