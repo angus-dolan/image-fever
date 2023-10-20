@@ -1,29 +1,51 @@
 #include "shared_state.h"
 
-std::vector<image> imageQueue;
-std::shared_mutex imageQueueLock;
+ImageQueue imageQueue;
+shared_mutex imageQueueLock;
 int currentIndex = 0;
 
-std::vector<image> getQueue() {
-    std::shared_lock<std::shared_mutex> lock(imageQueueLock);
-
-    return imageQueue;
-
-    lock.unlock();
-}
-
-image getCurrentImage() {
-    std::shared_lock<std::shared_mutex> lock(imageQueueLock);
-
-    return imageQueue[currentIndex];
-
-    lock.unlock();
-}
-
-image getImage(int index) {
-    std::shared_lock<std::shared_mutex> lock(imageQueueLock);
-
+image ImageQueue::getImage(int index) {
     return imageQueue[index];
+}
 
-    lock.unlock();
+vector<image> ImageQueue::getQueue() {
+    return imageQueue;
+}
+
+void ImageQueue::push(image& payload) {
+    if (imageQueue.empty()) {
+        imageQueue.push_back(payload);
+        return;
+    }
+
+    for (auto img = imageQueue.begin(); img != imageQueue.end(); ++img) {
+        if (img->hue > payload.hue) {
+            imageQueue.insert(img, payload);
+            return;
+        }
+    }
+
+    imageQueue.push_back(payload);
+}
+
+optional<image> ImageQueue::pop() {
+    if (imageQueue.empty()) {
+        return nullopt;
+    }
+
+    for (auto current = imageQueue.rbegin(); current != imageQueue.rend(); ++current) {
+        if (current->processed == false) {
+            image img = *current;
+            imageQueue.erase(prev(current.base()));
+            return img;
+        }
+    }
+
+    return std::nullopt;
+}
+
+void ImageQueue::printQueue() const {
+    for (const auto& img : imageQueue) {
+        cout << img.path << " with hue: " << img.hue << endl;
+    }
 }

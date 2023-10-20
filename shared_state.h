@@ -2,19 +2,33 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <shared_mutex>
+#include <optional>
+#include <iterator>
 #include <thread>
 
+using namespace std;
+
 struct image {
-    std::string path;
+    string path;
     bool processed;
     int initialPos;
     double hue;
 };
 
-extern std::shared_mutex imageQueueLock;
-extern std::vector<image> imageQueue;
-extern int currentIndex;
+class ImageQueue {
+private:
+    vector<image> imageQueue;
 
-std::vector<image> getQueue();
-image getImage(int index);
+public:
+    image getImage(int index);
+    vector<image> getQueue();
+    void push(image& payload);
+    optional<image> pop();
+    void printQueue() const;
+};
+
+extern shared_mutex imageQueueLock;
+extern ImageQueue imageQueue;
+extern int currentIndex;

@@ -1,5 +1,4 @@
 #include "process_image.h"
-#include <algorithm>
 
 double warmth(double& median) {
     return round((median + (1 / 6.0f)) * 100.0) / 100.0;
@@ -47,14 +46,21 @@ void process(image& img) {
     double hue = calculateMedian(unsorted);
     unique_lock<std::shared_mutex> lock(imageQueueLock);
 
+    img.hue = hue;
+    img.processed = true;
+    imageQueue.push(img);
+
     lock.unlock();
-    cout << "The median hue value is " << hue << endl;
 }
 
 void processImages() {
-    vector<image> queue = getQueue();
+    optional<image> initial = imageQueue.pop();
 
-    for (image img : queue) {
+    while (initial.has_value()) {
+        image img = initial.value();
         process(img);
+
+        // Next image to process
+        initial = imageQueue.pop();
     }
 }

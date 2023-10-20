@@ -25,11 +25,11 @@ sf::Text placeholder(const sf::Font& font, const std::string& str, int charSize,
 
 bool preloadResources(sf::Font& font, sf::Texture& texture, int imageIndex) {
     return font.loadFromFile("./OpenSans-Bold.ttf") &&
-        texture.loadFromFile(getImage(imageIndex).path);
+        texture.loadFromFile(imageQueue.getImage(imageIndex).path);
 }
 
 void updateSprite(sf::Sprite& sprite, sf::Texture& texture, int imageIndex, int gameWidth, int gameHeight, sf::RenderWindow& window) {
-    const auto& image = getImage(imageIndex);
+    const auto& image = imageQueue.getImage(imageIndex);
     window.setTitle(image.path);
 
     if (image.processed && texture.loadFromFile(image.path)) {
@@ -94,10 +94,10 @@ int slideshow()
             // Arrow keys
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Key::Left) {
-                    imageIndex = (imageIndex + getQueue().size() - 1) % getQueue().size();
+                    imageIndex = (imageIndex + imageQueue.getQueue().size() - 1) % imageQueue.getQueue().size();
                 }
                 else if (event.key.code == sf::Keyboard::Key::Right) {
-                    imageIndex = (imageIndex + 1) % getQueue().size();
+                    imageIndex = (imageIndex + 1) % imageQueue.getQueue().size();
                 }
 
                 updateSprite(sprite, texture, imageIndex, gameWidth, gameHeight, window);
@@ -107,7 +107,7 @@ int slideshow()
         // Draw
         window.clear(sf::Color(0, 0, 0));
 
-        if (getImage(imageIndex).processed) {
+        if (imageQueue.getImage(imageIndex).processed) {
             window.draw(sprite);
         }
         else {

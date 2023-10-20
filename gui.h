@@ -11,5 +11,4 @@
 #include <iostream>
 
 sf::Vector2f scaleFromDimensions(const sf::Vector2u& textureSize, int screenWidth, int screenHeight);
-
 int slideshow();

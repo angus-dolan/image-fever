@@ -10,7 +10,7 @@ bool preloadImages() {
             p.path().u8string(), false, i++, std::numeric_limits<double>::infinity()
         };
 
-        imageQueue.push_back(newImage);
+        imageQueue.push(newImage);
     }
 
     return true;

@@ -1,5 +1,6 @@
 #include "preload_images.h"
 #include "process_image.h"
+#include "shared_state.h"
 #include "gui.h"
 #include <iostream>
 #include <future>
@@ -11,7 +12,8 @@ int main()
 
     if (preloaded) {
         processImages();
-        //slideshow();
+        imageQueue.printQueue();
+        
     }
    
     return EXIT_SUCCESS;
