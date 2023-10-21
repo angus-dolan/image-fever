@@ -1,5 +1,5 @@
 #include "preload_images.h"
-#include "process_image.h"
+#include "process_images.h"
 #include "shared_state.h"
 #include "gui.h"
 #include <iostream>

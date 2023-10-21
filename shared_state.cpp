@@ -11,7 +11,7 @@ vector<image> ImageQueue::getQueue() {
     return imageQueue;
 }
 
-void ImageQueue::push(image& payload) {
+void ImageQueue::enqueue(image& payload) {
     if (imageQueue.empty()) {
         imageQueue.push_back(payload);
         return;
@@ -27,7 +27,7 @@ void ImageQueue::push(image& payload) {
     imageQueue.push_back(payload);
 }
 
-optional<image> ImageQueue::pop() {
+optional<image> ImageQueue::dequeue() {
     if (imageQueue.empty()) {
         return nullopt;
     }

@@ -1,4 +1,4 @@
-#include "process_image.h"
+#include "process_images.h"
 
 double warmth(double& median) {
     return round((median + (1 / 6.0f)) * 100.0) / 100.0;
@@ -48,19 +48,19 @@ void process(image& img) {
 
     img.hue = hue;
     img.processed = true;
-    imageQueue.push(img);
+    imageQueue.enqueue(img);
 
     lock.unlock();
 }
 
 void processImages() {
-    optional<image> initial = imageQueue.pop();
+    optional<image> initial = imageQueue.dequeue();
 
     while (initial.has_value()) {
         image img = initial.value();
         process(img);
 
         // Next image to process
-        initial = imageQueue.pop();
+        initial = imageQueue.dequeue();
     }
 }

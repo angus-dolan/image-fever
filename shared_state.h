@@ -24,8 +24,8 @@ private:
 public:
     image getImage(int index);
     vector<image> getQueue();
-    void push(image& payload);
-    optional<image> pop();
+    void enqueue(image& payload);
+    optional<image> dequeue();
     void printQueue() const;
 };
 

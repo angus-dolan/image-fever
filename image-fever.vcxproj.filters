@@ -27,7 +27,7 @@
     <ClCompile Include="shared_state.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="process_image.cpp">
+    <ClCompile Include="process_images.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="shared_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="process_image.h">
+    <ClInclude Include="process_images.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
