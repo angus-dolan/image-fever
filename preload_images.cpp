@@ -1,7 +1,6 @@
 #include "preload_images.h"
 
 bool preloadImages() {
-    unique_lock<shared_mutex> lock(imageQueueLock);
     const char* imgFolder = "images/unsorted";
 
     int i = 0;
@@ -14,5 +13,4 @@ bool preloadImages() {
     }
 
     return true;
-    lock.unlock();
 }

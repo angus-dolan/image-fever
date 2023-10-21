@@ -1,17 +1,10 @@
 #include "shared_state.h"
 
 ImageQueue imageQueue;
-shared_mutex imageQueueLock;
-
-image ImageQueue::getImage(int index) {
-    return imageQueue[index];
-}
-
-vector<image> ImageQueue::getQueue() {
-    return imageQueue;
-}
 
 void ImageQueue::enqueue(image& payload) {
+    unique_lock<shared_mutex> lock(mutex);
+
     if (imageQueue.empty()) {
         imageQueue.push_back(payload);
         return;
@@ -28,6 +21,8 @@ void ImageQueue::enqueue(image& payload) {
 }
 
 optional<image> ImageQueue::dequeue() {
+    unique_lock<shared_mutex> lock(mutex);
+
     if (imageQueue.empty()) {
         return nullopt;
     }
@@ -43,7 +38,21 @@ optional<image> ImageQueue::dequeue() {
     return nullopt;
 }
 
-void ImageQueue::printQueue() const {
+vector<image> ImageQueue::getQueue() {
+    shared_lock<shared_mutex> lock(mutex);
+
+    return imageQueue;
+}
+
+image ImageQueue::getImage(int index) {
+    shared_lock<shared_mutex> lock(mutex);
+
+    return imageQueue[index];
+}
+
+void ImageQueue::printQueue() {
+    shared_lock<shared_mutex> lock(mutex);
+
     for (const auto& img : imageQueue) {
         cout << img.path << " with hue: " << img.hue << endl;
     }

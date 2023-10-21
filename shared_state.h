@@ -20,15 +20,14 @@ struct image {
 class ImageQueue {
 private:
     vector<image> imageQueue;
+    shared_mutex mutex;
 
 public:
-    image getImage(int index);
-    vector<image> getQueue();
     void enqueue(image& payload);
     optional<image> dequeue();
-    void printQueue() const;
+    vector<image> getQueue();
+    image getImage(int index);
+    void printQueue();
 };
 
-extern shared_mutex imageQueueLock;
 extern ImageQueue imageQueue;
-extern int currentIndex;
