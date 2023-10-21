@@ -28,7 +28,7 @@ bool preloadResources(sf::Font& font, sf::Texture& texture, int imageIndex) {
         texture.loadFromFile(imageQueue.getImage(imageIndex).path);
 }
 
-void updateSprite(sf::Sprite& sprite, sf::Texture& texture, int imageIndex, int gameWidth, int gameHeight, sf::RenderWindow& window) {
+image updateSprite(sf::Sprite& sprite, sf::Texture& texture, int imageIndex, int gameWidth, int gameHeight, sf::RenderWindow& window) {
     const auto& image = imageQueue.getImage(imageIndex);
     window.setTitle(image.path);
 
@@ -36,6 +36,8 @@ void updateSprite(sf::Sprite& sprite, sf::Texture& texture, int imageIndex, int 
         sprite = sf::Sprite(texture);
         sprite.setScale(scaleFromDimensions(texture.getSize(), gameWidth, gameHeight));
     }
+
+    return image;
 }
 
 void handleWindowResize(sf::RenderWindow& window, int gameWidth, int gameHeight) {
@@ -99,15 +101,14 @@ int slideshow()
                 else if (event.key.code == sf::Keyboard::Key::Right) {
                     imageIndex = (imageIndex + 1) % imageQueue.getQueue().size();
                 }
-
-                updateSprite(sprite, texture, imageIndex, gameWidth, gameHeight, window);
             }
         }
 
         // Draw
         window.clear(sf::Color(0, 0, 0));
+        image img = updateSprite(sprite, texture, imageIndex, gameWidth, gameHeight, window);
 
-        if (imageQueue.getImage(imageIndex).processed) {
+        if (img.processed) {
             window.draw(sprite);
         }
         else {
