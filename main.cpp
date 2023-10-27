@@ -4,19 +4,21 @@
 #include "gui.h"
 #include <iostream>
 #include <future>
+#include <chrono>
 
 int main()
 {
+    auto start = std::chrono::high_resolution_clock::now(); // for results
+
     future<bool> preloader = async(launch::async, preloadImages);
     bool preloaded = preloader.get();
 
     if (preloaded) {
         thread slideshowThread(slideshow);
-        thread processImagesThread(processImages);
+        processImages(1);
 
         slideshowThread.join();
-        processImagesThread.join();
     }
-   
+
     return EXIT_SUCCESS;
 }

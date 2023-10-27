@@ -11,4 +11,4 @@
 using namespace std;
 using namespace cv;
 
-void processImages();
+void processImages(int numThreads = 1);

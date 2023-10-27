@@ -46,7 +46,7 @@ void process(image& img) {
     imageQueue.enqueue(img);
 }
 
-void processImages() {
+void consumeImageQueue() {
     optional<image> current = imageQueue.dequeue();
 
     while (current.has_value()) {
@@ -54,5 +54,18 @@ void processImages() {
 
         // Next image to process
         current = imageQueue.dequeue();
+    }
+}
+
+void processImages(int numThreads) {
+    vector<thread> threads;
+
+    for (int i = 0; i < numThreads; i++)
+    {
+        threads.emplace_back([i] { consumeImageQueue(); });
+    }
+
+    for (auto& thread : threads) {
+        thread.join();
     }
 }
