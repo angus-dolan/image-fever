@@ -47,13 +47,12 @@ void process(image& img) {
 }
 
 void processImages() {
-    optional<image> initial = imageQueue.dequeue();
+    optional<image> current = imageQueue.dequeue();
 
-    while (initial.has_value()) {
-        image img = initial.value();
-        process(img);
+    while (current.has_value()) {
+        process(current.value());
 
         // Next image to process
-        initial = imageQueue.dequeue();
+        current = imageQueue.dequeue();
     }
 }
