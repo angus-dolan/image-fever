@@ -4,22 +4,40 @@ double warmth(double& median) {
     return round((median + (1 / 6.0f)) * 100.0) / 100.0;
 }
 
+//double calculateMedian(vector<uchar>& unsorted) {
+//    int n = unsorted.size();
+//    double median;
+//
+//    // Sort : https://en.cppreference.com/w/cpp/algorithm/sort
+//    vector<uchar> sorted = unsorted;
+//    sort(sorted.begin(), sorted.end());
+//    
+//    // Calculate median
+//    if (n % 2 == 0)
+//        median = (sorted[n / 2 - 1] + sorted[n / 2]) / 2.0;
+//    else
+//        median = sorted[n / 2];
+//
+//    median = median / 360; // normalize
+//    return warmth(median); 
+//}
+
 double calculateMedian(vector<uchar>& unsorted) {
     int n = unsorted.size();
     double median;
 
-    // Sort : https://en.cppreference.com/w/cpp/algorithm/sort
-    vector<uchar> sorted = unsorted;
-    sort(sorted.begin(), sorted.end());
-    
-    // Calculate median
-    if (n % 2 == 0)
-        median = (sorted[n / 2 - 1] + sorted[n / 2]) / 2.0;
-    else
-        median = sorted[n / 2];
+    if (n % 2 == 0) {
+        nth_element(unsorted.begin(), unsorted.begin() + n / 2, unsorted.end());
+        nth_element(unsorted.begin(), unsorted.begin() + n / 2 - 1, unsorted.end());
+        median = (unsorted[n / 2 - 1] + unsorted[n / 2]) / 2.0;
+    }
+    else {
+        nth_element(unsorted.begin(), unsorted.begin() + n / 2, unsorted.end());
+        median = unsorted[n / 2];
+    }
 
     median = median / 360; // normalize
-    return warmth(median); 
+    return warmth(median);
 }
 
 void process(image& img) {
@@ -57,7 +75,7 @@ void consumeImageQueue() {
     }
 }
 
-void processImages(int numThreads) {
+void processImages(int numThreads) {  
     vector<thread> threads;
 
     for (int i = 0; i < numThreads; i++)

@@ -24,8 +24,9 @@ sf::Text placeholder(const sf::Font& font, const std::string& str, int charSize,
 }
 
 bool preloadResources(sf::Font& font, sf::Texture& texture, int imageIndex) {
-    return font.loadFromFile("./OpenSans-Bold.ttf") &&
-        texture.loadFromFile(imageQueue.getImage(imageIndex).path);
+    string fontPath = string(CMAKE_DIR) + "/OpenSans-Bold.ttf";
+
+    return font.loadFromFile(fontPath.c_str()) && texture.loadFromFile(imageQueue.getImage(imageIndex).path);
 }
 
 image updateSprite(sf::Sprite& sprite, sf::Texture& texture, int imageIndex, int gameWidth, int gameHeight, sf::RenderWindow& window) {

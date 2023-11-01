@@ -2,7 +2,7 @@
 
 #include "preload_images.h"
 #include "shared_state.h"
-#include <SFML/Graphics.hpp>
+#include "dependencies/SFML-2.6.0/include/SFML/Graphics.hpp"
 #include <cmath>
 #include <string>
 #include <vector>

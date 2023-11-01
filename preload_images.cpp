@@ -1,15 +1,21 @@
 #include "preload_images.h"
 
 bool preloadImages() {
-    const char* imgFolder = "images/unsorted";
+    string imgFolder = string(CMAKE_DIR) + "/images/unsorted";
 
-    int i = 0;
-    for (auto& p : fs::directory_iterator(imgFolder)) {
-        image newImage{
-            p.path().u8string(), false, i++, numeric_limits<double>::infinity()
-        };
+    try {
+        int i = 0;
+        for (auto& p : fs::directory_iterator(imgFolder)) {
+            image newImage{
+                p.path().u8string(), false, i++, numeric_limits<double>::infinity()
+            };
 
-        imageQueue.enqueue(newImage);
+            imageQueue.enqueue(newImage);
+        }
+    }
+    catch (const fs::filesystem_error& e) {
+        cerr << e.what() << endl;
+        return false;
     }
 
     return true;
